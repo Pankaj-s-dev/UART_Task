@@ -9,7 +9,7 @@ This Program reads the incomming data from UART and save in Non-Volatile memory 
 
 To switch between `FAT System` and `NVS System` change the value of ``USE_NVS`` from the `main.cpp`. 
 
-## How to use example
+## How to use
 
 clone the repo.
 
