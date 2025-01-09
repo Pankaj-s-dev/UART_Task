@@ -1,0 +1,53 @@
+# Compiled object files
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Executables
+*.exe
+*.out
+*.app
+*.ihex
+*.hex
+*.elf
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# ESP-IDF build directory
+/build/
+sdkconfig
+sdkconfig.old
+
+# Eclipse IDE
+/.project
+/.cproject
+/.settings/
+
+# VSCode
+.vscode/
+
+# CLion
+.idea/
+cmake-build-debug/
+cmake-build-release/
+
+# Other
+*.log
+*.pyc
+__pycache__/
+
+# Container
+.devcontainer/
