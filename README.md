@@ -12,10 +12,15 @@ To switch between `FAT System` and `NVS System` change the value of ``USE_NVS`` 
 ## How to use example
 
 clone the repo.
+
 source the `idf.py` in the terminal.
+
 select your target device, supported device in the avobe table.
+
 Build the repo with `idf.py build`.
+
 Flash the firmware to the controller by `idf.py flash`.
+
 monitor the serial on 2400 budrate by `idf.py monitor -b 2400`.
 
 Run the python script from `Scripts\Serialtest.py`.
