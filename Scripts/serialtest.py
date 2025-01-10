@@ -10,11 +10,7 @@ start_time = time.time()
 
 bytes_sent = uart_p.write(data_to_send.encode()) 
 
-uart_p.flush()  # Ensure all data is sent
-print("Data sent. Waiting for acknowledgment...")
-
-# Wait for acknowledgment
-ack = uart_p.readline().decode().strip()
+uart_p.flush() 
 
 end_time = time.time()
 
@@ -22,9 +18,9 @@ print(f"Sent data: \n\n{(data_to_send)}\n")
 
 uart_p.close()
 
-time_taken = end_time - start_time  # In seconds
-bits_sent = bytes_sent * 8          # Convert bytes to bits
-speed_bps = bits_sent / time_taken  # Speed in bps
+time_taken = end_time - start_time
+bits_sent = bytes_sent * 8          
+speed_bps = bits_sent / time_taken  
 # Display results
 print(f"Time taken: {time_taken:.2f} seconds")
 print(f"Speed: {speed_bps:.2f} bps")
