@@ -10,6 +10,7 @@ This Program reads the incomming data from UART and save in Non-Volatile memory 
 To switch between `FAT System` and `NVS System` change the value of ``USE_NVS`` from the `main.cpp`. 
 
 ## File Structure
+``
 ├── CMakeLists.txt
 ├── main                          # Holds all the source code
 │   ├── CMakeLists.txt            
@@ -28,6 +29,7 @@ To switch between `FAT System` and `NVS System` change the value of ``USE_NVS`` 
 ├── sdkconfig                     # ESP MCU Configuration
 ├── sdkconfig.ci
 └── sdkconfig.old
+``
 
 
 ## How to use
