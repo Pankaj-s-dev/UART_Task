@@ -4,8 +4,8 @@
 # UART with Non-Volatile Memory Access
 
 This Program reads the incomming data from UART and save in Non-Volatile memory with following methods : 
-1. FAT System
-2. NVS System
+1. FAT System : It can write the data in chunks which means we can append the data.
+2. NVS System : all the data has to be written at once we can not append the data in chunks
 
 To switch between `FAT System` and `NVS System` change the value of ``USE_NVS`` from the `main.cpp`. 
 
