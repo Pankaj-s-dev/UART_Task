@@ -9,7 +9,7 @@
 #include "FAT_Storage.h"
 #include "NVS_Storage.h"
 
-#define USE_NVS 1 // 1 for NVS and 0 for FAT
+#define USE_NVS 0 // 1 for NVS and 0 for FAT
 #define TAG "MAIN"
 
 #define UART_NUM UART_NUM_0
