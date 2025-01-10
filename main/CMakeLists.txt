@@ -1,4 +1,4 @@
-set(CMAKE_CXX_STANDARD 17) # Use C++17 or your desired standard
+cmake_minimum_required(VERSION 3.24)
 
 file(GLOB_RECURSE APP_SOURCES "src/*.c" "src/*.cpp")
 
