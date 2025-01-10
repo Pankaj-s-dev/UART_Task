@@ -10,44 +10,26 @@ This Program reads the incomming data from UART and save in Non-Volatile memory 
 To switch between `FAT System` and `NVS System` change the value of ``USE_NVS`` from the `main.cpp`. 
 
 ## File Structure
-``
+```
 ├── CMakeLists.txt
-
-├── main                          # Holds all the source code
-
+├── main                           # Holds all the source code
 │   ├── CMakeLists.txt            
-
 │   ├── include
-
 │   │   ├── FAT_Storage.h         # FAT System Header file
-
 │   │   └── NVS_Storage.h         # NVS System Header file
-
 │   ├── main.cpp                  # Holds the main app
-
 │   └── src                       
-
 │       ├── FAT_Storage.cpp       # FAT System Source file
-
 │       └── NVS_Storage.cpp       # NVS System Source file
-
 ├── partitions.csv                # Partition details csv
-
 ├── pytest_hello_world.py
-
 ├── README.md
-
 ├── Scripts
-
 │   └── serialtest.py             # Python script to send the serial data from PC
-
 ├── sdkconfig                     # ESP MCU Configuration
-
 ├── sdkconfig.ci
-
 └── sdkconfig.old
-
-``
+```
 
 
 ## How to use
