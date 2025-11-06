@@ -1,70 +1,167 @@
-| Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-C6 | ESP32-H2 | ESP32-P4 | ESP32-S2 | ESP32-S3 | Linux |
-| ----------------- | ----- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | ----- |
+# UART_Task   
+**ESP32 UART Performance and Data Storage Test**
 
-# UART with Non-Volatile Memory Access
+This project demonstrates **UART communication between an ESP32** and a **Python host script** for measuring serial data transfer rate and optionally storing received data into **FAT** or **NVS** storage.  
 
-This Program reads the incomming data from UART and save in Non-Volatile memory with following methods : 
-1. FAT System : It can write the data in chunks which means we can append the data.
-2. NVS System : all the data has to be written at once we can not append the data in chunks
+The setup allows you to benchmark UART throughput and experiment with ESP32 storage and FreeRTOS-based UART handling.
 
-To switch between `FAT System` and `NVS System` change the value of ``USE_NVS`` from the `main.cpp`. 
+---
 
-## File Structure
+## Repository Structure
+
 ```
-├── CMakeLists.txt
-├── main                           # Holds all the source code
-│   ├── CMakeLists.txt            
-│   ├── include
-│   │   ├── FAT_Storage.h         # FAT System Header file
-│   │   └── NVS_Storage.h         # NVS System Header file
-│   ├── main.cpp                  # Holds the main app
-│   └── src                       
-│       ├── FAT_Storage.cpp       # FAT System Source file
-│       └── NVS_Storage.cpp       # NVS System Source file
-├── partitions.csv                # Partition details csv
-├── pytest_hello_world.py
-├── README.md
-├── Scripts
-│   └── serialtest.py             # Python script to send the serial data from PC
-├── sdkconfig                     # ESP MCU Configuration
-├── sdkconfig.ci
-└── sdkconfig.old
+UART_Task/
+├── main/
+│   ├── main.cpp                # ESP32 main application logic
+│   ├── include/
+│   │   ├── FAT_Storage.h       # FAT storage interface
+│   │   └── NVS_Storage.h       # NVS storage interface
+│   └── src/
+│       ├── FAT_Storage.cpp     # FAT file write logic
+│       └── NVS_Storage.cpp     # NVS key-value storage logic
+├── Scripts/
+│   └── serialtest.py           # Python script to send UART data
+├── partitions.csv              # ESP32 flash partition layout
+├── sdkconfig.ci                # ESP-IDF configuration file
+├── CMakeLists.txt              # ESP-IDF build system configuration
+└── README.md                   # Project documentation
 ```
 
+---
 
-## How to use
+## ESP32 Application Overview
 
-clone the repo.
+The firmware is written using **ESP-IDF** and runs under **FreeRTOS**.  
+It performs continuous UART reception, measures data throughput, and can optionally save data to **FAT** or **NVS**.
 
-source the `idf.py` in the terminal.
+### Features
+- UART initialization and data reception  
+- Real-time **data rate calculation** (bps)  
+- Switchable storage backends: FAT or NVS  
+- Simple, extendable structure for testing serial throughput
 
-select your target device, supported device in the avobe table.
+### Configuration
+In `main.cpp`:
+```cpp
+#define USE_NVS 0          // 0 = Use FAT, 1 = Use NVS
+#define UART_NUM UART_NUM_0
+#define TXD_PIN GPIO_NUM_43
+#define RXD_PIN GPIO_NUM_44
+#define RTS GPIO_NUM_15
+#define CTS GPIO_NUM_16
+#define READ_TIMEOUT_MS 1000
+```
 
-Build the repo with `idf.py build`.
+### Key Functions
 
-Flash the firmware to the controller by `idf.py flash`.
+#### `print_data_rate(float time_interval, uint32_t bytes_received)`
+Calculates and prints the current UART data rate:
+```
+bits_received = bytes_received * 8
+data_rate_bps = bits_received / time_interval
+```
 
-monitor the serial on 2400 budrate by `idf.py monitor -b 2400`.
+---
 
-Run the python script from `Scripts\Serialtest.py`.
+## Python Host Script
 
-Observe the result in the serial monitor.
+The Python script (`Scripts/serialtest.py`) runs on your PC and sends a data payload to the ESP32 via serial connection.
 
-## API Reference
 
-For more information on structure and contents of ESP-IDF projects, please refer to Section [Build System](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html) of the ESP-IDF Programming Guide.
+### Functionality
+- Opens `/dev/ttyUSB0` at **2400 baud**.
+- Waits briefly for ESP32 to initialize.
+- Sends a long text message to ESP32.
+- ESP32 measures and logs received speed.
 
-## Troubleshooting
+You can modify:
+- The **baud rate** (e.g., `115200`)
+- The **payload text** or binary data
 
-* Program upload failure
+---
 
-    * Hardware connection is not correct: run `idf.py -p PORT monitor`, and reboot your board to see if there are any output logs.
-    * The baud rate for downloading is too high: lower your baud rate in the `menuconfig` menu, and try again.
+## System Workflow
 
-## Technical support and feedback
+```
+┌──────────────────┐       UART TX/RX        ┌──────────────────┐
+│   Python Script  │ ─────────────────────→  │      ESP32       │
+│  (serialtest.py) │                         │ (main.cpp + IDF) │
+└──────────────────┘                         └──────────────────┘
+           │                                           │
+           │                Prints bps logs            │
+           └───────────────────────────────────────────┘
+```
 
-Please use the following feedback channels:
+---
 
-* For technical queries, go to the [esp32.com](https://esp32.com/) forum
-* For a feature request or bug report, create a [GitHub issue](https://github.com/espressif/esp-idf/issues)
+## How to Run
 
+### **1 Flash ESP32**
+```bash
+idf.py set-target esp32s3
+idf.py build
+idf.py flash
+idf.py monitor
+```
+
+### **2 Run Python Script**
+Install dependency:
+```bash
+pip install pyserial
+```
+
+Run the test:
+```bash
+python3 Scripts/serialtest.py
+```
+
+Monitor ESP output:
+```
+bits_received: 8320 bR and time interval 0.567
+Speed: 14676 bps
+```
+
+---
+
+## Notes
+- To use **NVS storage**, set:
+  ```cpp
+  #define USE_NVS 1
+  ```
+- UART GPIOs can be changed in `main.cpp` if needed.
+- The Python script can be extended for stress testing or binary transmission.
+- Works on ESP32-S3 and other ESP-IDF compatible boards.
+
+---
+
+## Requirements
+
+### ESP32 Firmware
+- [ESP-IDF v5+](https://github.com/espressif/esp-idf)
+- USB-UART connection
+
+### Host System
+- Python 3.8+
+- `pyserial` package
+
+---
+
+## Example Output
+
+```
+bits_received: 8320 bR and time interval 0.567
+Speed: 14676 bps
+```
+
+---
+
+## License
+This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👨‍💻 Author
+**Pankaj Sharma**  
+If you have questions, suggestions, or collaboration ideas:  
+- Connect on [LinkedIn](https://www.linkedin.com/in/pankaj-k-sharma/)  
+- Or open a discussion in the [Issues](../../issues) tab  
